@@ -1,0 +1,13 @@
+{
+	"folders":
+	[
+		{
+			"folder_exclude_patterns":
+			[
+				"venv"
+			],
+			"path": "."
+		}
+	],
+	"virtualenv": "/home/daniel/project/on-track/venv"
+}
