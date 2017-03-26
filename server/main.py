@@ -23,9 +23,7 @@ def main():
     configure()
     config = {
         '/': {
-            'tools.staticdir.on': True,
-            'tools.staticdir.dir': STATIC_PATH,
-            'tools.staticdir.index': 'index.html'
+            'tools.sessions.on': True
         },
         '/api': {
             'request.dispatch': cherrypy.dispatch.MethodDispatcher()
