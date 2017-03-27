@@ -23,13 +23,11 @@ def main():
     configure()
     config = {
         '/': {
-            'tools.sessions.on': True
-        },
-        '/api': {
+            'tools.sessions.on': True,
             'request.dispatch': cherrypy.dispatch.MethodDispatcher()
         }
     }
-    cherrypy.tree.mount(handlers.server, config=config)
+    cherrypy.tree.mount(handlers.server, '/api', config=config)
     cherrypy.engine.start()
     cherrypy.engine.block()
 
