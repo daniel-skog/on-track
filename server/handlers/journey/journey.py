@@ -31,7 +31,7 @@ class JourneyHandler(object):
 
         return response
 
-    def PUT(self):
+    def POST(self):
         journey = cherrypy.request.json
 
         if journey:
@@ -44,7 +44,7 @@ class JourneyHandler(object):
 
         return response
 
-    def POST(self, journeyid):
+    def PATCH(self, journeyid):
         journey = cherrypy.request.json
 
         if not journey:

@@ -5,7 +5,7 @@ from cherrypy.test import helper
 
 class OnTrackTestHelper(helper.CPWebCase):
 
-    def put(self, url, json=None, body=None, headers=None, **kwargs):
+    def post(self, url, json=None, body=None, headers=None, **kwargs):
         if json is not None:
             body = _json.dumps(json)
             if not headers:
@@ -13,7 +13,7 @@ class OnTrackTestHelper(helper.CPWebCase):
             headers.append(('Content-Type', 'application/json'))
             headers.append(('Content-Length', str(len(body))))
 
-        self.getPage(url, body=body, method='PUT', headers=headers, **kwargs)
+        self.getPage(url, body=body, method='POST', headers=headers, **kwargs)
 
         try:
             self.json = _json.loads(self.body)
@@ -28,7 +28,7 @@ class OnTrackTestHelper(helper.CPWebCase):
         except Exception:
             pass
 
-    def post(self, url, json=None, body=None, headers={}, **kwargs):
+    def patch(self, url, json=None, body=None, headers={}, **kwargs):
         if json is not None:
             body = _json.dumps(json)
             if not headers:
@@ -36,7 +36,7 @@ class OnTrackTestHelper(helper.CPWebCase):
             headers.append(('Content-Type', 'application/json'))
             headers.append(('Content-Length', str(len(body))))
 
-        self.getPage(url, body=body, method='POST', headers=headers, **kwargs)
+        self.getPage(url, body=body, method='PATCH', headers=headers, **kwargs)
 
         try:
             self.json = _json.loads(self.body)

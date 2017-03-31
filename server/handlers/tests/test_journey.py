@@ -59,7 +59,7 @@ class TestJourney(OnTrackTestHelper):
     def test_canPutJourneyInDb(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
+        self.post('/', json=journey)
 
         self.assertStatus(200)
         assert len(self.json) == 1
@@ -67,7 +67,7 @@ class TestJourney(OnTrackTestHelper):
     def test_putSetsCreatedBy(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
+        self.post('/', json=journey)
 
         self.assertStatus(200)
         (_, j), = self.json.items()
@@ -76,7 +76,7 @@ class TestJourney(OnTrackTestHelper):
     def test_canGetJourneyById(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
+        self.post('/', json=journey)
         (jid, jput), = self.json.items()
         self.get('/{}'.format(jid))
 
@@ -88,7 +88,7 @@ class TestJourney(OnTrackTestHelper):
     def test_gettingAJourneyCreatedByAnotherUserReturnsForbiddenAccess(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
+        self.post('/', json=journey)
         (jid, jput), = self.json.items()
         tools.mockAuthorize.username = 'pineapple'
         self.get('/{}'.format(jid))
@@ -97,19 +97,19 @@ class TestJourney(OnTrackTestHelper):
     def test_nonexistingJourneyIdReturnsNotFound(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
+        self.post('/', json=journey)
         self.get('/asdasdasdasdasdasd')
         self.assertStatus(404)
 
     def test_canGetAllJourneysCreatedByTheUser(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
-        self.put('/', json=journey)
-        self.put('/', json=journey)
+        self.post('/', json=journey)
+        self.post('/', json=journey)
+        self.post('/', json=journey)
         tools.mockAuthorize.username = 'pineapple'
-        self.put('/', json=journey)
-        self.put('/', json=journey)
+        self.post('/', json=journey)
+        self.post('/', json=journey)
         tools.mockAuthorize.username = 'testuser'
         self.get('/')
 
@@ -119,10 +119,10 @@ class TestJourney(OnTrackTestHelper):
     def test_canModifyJourney(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
+        self.post('/', json=journey)
         (jid, j), = self.json.items()
         journey['destination'] = 'ankeborg'
-        self.post('/{}'.format(jid), json=journey)
+        self.patch('/{}'.format(jid), json=journey)
         self.get('/{}'.format(jid))
 
         self.assertStatus(200)
@@ -132,10 +132,10 @@ class TestJourney(OnTrackTestHelper):
     def test_modifyReturnsTheModifiedJourney(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
+        self.post('/', json=journey)
         (jid, j), = self.json.items()
         journey['destination'] = 'ankeborg'
-        self.post('/{}'.format(jid), json=journey)
+        self.patch('/{}'.format(jid), json=journey)
 
         self.assertStatus(200)
         (jid, j), = self.json.items()
@@ -144,36 +144,36 @@ class TestJourney(OnTrackTestHelper):
     def test_modificationOfAnotherPlayersJourneyReturnsForbiddenAccess(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
+        self.post('/', json=journey)
         (jid, j), = self.json.items()
         journey['destination'] = 'ankeborg'
         tools.mockAuthorize.username = 'pineapple'
-        self.post('/{}'.format(jid), json=journey)
+        self.patch('/{}'.format(jid), json=journey)
 
         self.assertStatus(403)
 
     def test_modificationWithEmptyJourneyReturnsFormatError(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
+        self.post('/', json=journey)
         (jid, j), = self.json.items()
-        self.post('/{}'.format(jid), json={})
+        self.patch('/{}'.format(jid), json={})
 
         self.assertStatus(400)
 
     def test_modifyingANotExistingJourneyReturnsNotFound(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
+        self.post('/', json=journey)
         journey['destination'] = 'ankeborg'
-        self.post('/asdasdasdasdasd', json=journey)
+        self.patch('/asdasdasdasdasd', json=journey)
 
         self.assertStatus(404)
 
     def test_canRemoveJourney(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
+        self.post('/', json=journey)
         (jid, j), = self.json.items()
         self.delete('/{}'.format(jid))
 
@@ -183,7 +183,7 @@ class TestJourney(OnTrackTestHelper):
     def test_removingANotExistingJourneyReturnsNotFound(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
+        self.post('/', json=journey)
         self.delete('/fsdfdfdssaasd')
 
         self.assertStatus(404)
@@ -191,7 +191,7 @@ class TestJourney(OnTrackTestHelper):
     def test_removingAnotherPlayersJourneyReturnsForbiddenAccess(self):
         journey = self.journey()
 
-        self.put('/', json=journey)
+        self.post('/', json=journey)
         (jid, j), = self.json.items()
         tools.mockAuthorize.username = 'pineapple'
         self.delete('/{}'.format(jid))
