@@ -9,6 +9,10 @@ def getSession():
     }
 
 
+def getUsername():
+    return cherrypy.session.get('username')
+
+
 class Session(object):
 
     exposed = True
