@@ -8,9 +8,9 @@ from handlers.session import getUsername
 @cherrypy.tools.authorize()
 @cherrypy.tools.json_in()
 @cherrypy.tools.json_out()
+@cherrypy.expose
 class JourneyHandler(object):
 
-    exposed = True
     journeys = {}
 
     def GET(self, journeyid=None):
@@ -19,11 +19,11 @@ class JourneyHandler(object):
 
         try:
             if not journeyid:
-                response = {jid: journey for jid, journey in JourneyHandler.journeys.items() if journey.get('createdBy') == username}
+                response = [journey for journey in JourneyHandler.journeys.values() if journey.get('createdBy') == username]
             else:
                 journey = JourneyHandler.journeys[journeyid]
                 if journey.get('createdBy') == username:
-                    response = {journeyid: journey}
+                    response = journey
                 else:
                     raise cherrypy.HTTPError(403, 'cannot access journey')
         except KeyError:
@@ -36,26 +36,23 @@ class JourneyHandler(object):
 
         if journey:
             jid = str(uuid4())[24:]
-            response = {jid: journey}
             journey['createdBy'] = getUsername()
-            JourneyHandler.journeys.update(response)
+            journey['journeyId'] = jid
+            JourneyHandler.journeys[jid] = journey
         else:
             raise cherrypy.HTTPError(400, 'data was empty')
 
-        return response
+        return journey
 
     def PATCH(self, journeyid):
         journey = cherrypy.request.json
-
-        if not journey:
-            raise cherrypy.HTTPError(400, 'data was empty')
 
         try:
             orgJourney = JourneyHandler.journeys[journeyid]
 
             if orgJourney['createdBy'] == getUsername():
                 JourneyHandler.journeys[journeyid].update(journey)
-                response = {journeyid: journey}
+                response = JourneyHandler.journeys[journeyid]
             else:
                 raise cherrypy.HTTPError(403, 'could not modify {}'.format(journeyid))
 
@@ -68,7 +65,7 @@ class JourneyHandler(object):
         try:
             journey = JourneyHandler.journeys[journeyid]
             if journey.get('createdBy') == getUsername():
-                response = {journeyid: JourneyHandler.journeys.pop(journeyid)}
+                response = JourneyHandler.journeys.pop(journeyid)
             else:
                 raise cherrypy.HTTPError(403, 'cannot access journey')
         except KeyError:

@@ -52,3 +52,6 @@ class OnTrackTestHelper(helper.CPWebCase):
             pass
 
         return status, headers, body
+
+    def put(self, *args, **kwargs):
+        self.patch(*args, **kwargs)
