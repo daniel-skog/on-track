@@ -4,7 +4,6 @@ import pytest
 import tools
 tools.setupMockAuthorize()
 from handlers.journey import JourneyHandler
-
 from handlers.testutils import OnTrackTestHelper
 
 

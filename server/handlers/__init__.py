@@ -1,4 +1,5 @@
-from handlers.session import Session, Login, Logout
+from handlers.session import SessionHandler
+from handlers.journey import JourneyHandler
 
 
 class Root(object):
@@ -7,6 +8,5 @@ class Root(object):
 
 server = Root()
 
-server.session = Session()
-server.session.login = Login()
-server.session.logout = Logout()
+server.session = SessionHandler()
+server.journeys = JourneyHandler()
