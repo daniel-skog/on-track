@@ -1,4 +1,5 @@
 import os.path
+import json
 
 import cherrypy
 
@@ -6,9 +7,12 @@ import tools
 import handlers
 
 
-STATIC_PATH = os.path.dirname(os.path.realpath(__file__))
-STATIC_PATH = os.path.join(STATIC_PATH, '..', 'static')
-STATIC_PATH = os.path.normpath(STATIC_PATH)
+def standardErrorMessage(status, message, traceback, version):
+    response = cherrypy.response
+    response.headers['Content-Type'] = 'application/json'
+    if status != 500:
+        traceback = None
+    return json.dumps({'status': status, 'message': message, 'traceback': traceback, 'cpVersion': version, 'appVersion': '0'})
 
 
 class Root(object):
@@ -18,6 +22,7 @@ class Root(object):
 def configure():
     cherrypy.config.update({'server.socket_port': 8080})
     cherrypy.config.update({'server.socket_host': '0.0.0.0'})
+    cherrypy.config.update({'error_page.default': standardErrorMessage})
 
 
 def main():
