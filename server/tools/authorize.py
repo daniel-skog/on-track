@@ -4,7 +4,7 @@ import cherrypy
 @cherrypy.tools.register('before_finalize')
 def authorize():
     if not cherrypy.session.get('loggedIn'):
-        raise cherrypy.HTTPError(401, 'Not Logged In')
+        raise cherrypy.HTTPError(401, 'Not logged in')
 
 
 def mockAuthorize():
