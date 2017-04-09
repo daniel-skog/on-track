@@ -2,6 +2,7 @@ import cherrypy
 
 from handlers.session import SessionHandler
 from handlers.journey import JourneyHandler
+from handlers.game import GameHandler
 
 
 @cherrypy.expose
@@ -16,3 +17,4 @@ server = Api()
 
 server.session = SessionHandler()
 server.journeys = JourneyHandler()
+server.games = GameHandler()
