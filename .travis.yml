@@ -2,8 +2,11 @@ language: python
 python:
   - "3.6"
   - "3.7-dev" # 3.7 development branch
+  - "nightly"
 install:
   - pip install -r requirements.txt
   - pip install pytest-cov
+env:
+  PYTHONPATH=$PYTHONPATH:/home/travis/build/on-track-development/on-track-backend/server/
 script:
   pytest --cov=server --cov-report term-missing
