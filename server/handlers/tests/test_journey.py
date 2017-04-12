@@ -1,8 +1,6 @@
 import cherrypy
 import pytest
 
-import tools
-tools.setupMockAuthorize()
 from handlers.journey import JourneyHandler
 from handlers.testutils import OnTrackTestHelper
 
@@ -40,7 +38,7 @@ class TestJourney(OnTrackTestHelper):
 
     def setup_method(self, _):
         JourneyHandler.journeys.clear()
-        tools.mockAuthorize.username = 'testuser'
+        self.login()
 
     def setup_server():
 
@@ -95,7 +93,7 @@ class TestJourney(OnTrackTestHelper):
 
         self.post('/', json=journey)
         jid = self.json.get('journeyId')
-        tools.mockAuthorize.username = 'pineapple'
+        self.login(username='pineapple')
         self.get('/{}'.format(jid))
         self.assertStatus(403)
 
@@ -112,10 +110,10 @@ class TestJourney(OnTrackTestHelper):
         self.post('/', json=journey)
         self.post('/', json=journey)
         self.post('/', json=journey)
-        tools.mockAuthorize.username = 'pineapple'
+        self.login(username='pineapple')
         self.post('/', json=journey)
         self.post('/', json=journey)
-        tools.mockAuthorize.username = 'testuser'
+        self.login()
         self.get('/')
 
         self.assertStatus(200)
@@ -138,7 +136,7 @@ class TestJourney(OnTrackTestHelper):
 
         self.post('/', json=journey)
         journey['destination'] = 'ankeborg'
-        tools.mockAuthorize.username = 'pineapple'
+        self.login(username='pineapple')
         self.patch('/{}'.format(self.json['journeyId']), json=journey)
 
         self.assertStatus(403)
@@ -173,7 +171,7 @@ class TestJourney(OnTrackTestHelper):
         journey = self.journey()
 
         self.post('/', json=journey)
-        tools.mockAuthorize.username = 'pineapple'
+        self.login(username='pineapple')
         self.delete('/{}'.format(self.json['journeyId']))
 
         self.assertStatus(403)

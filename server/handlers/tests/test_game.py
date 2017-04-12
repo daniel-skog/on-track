@@ -1,8 +1,6 @@
 import cherrypy
 import pytest
 
-import tools
-tools.setupMockAuthorize()
 from handlers.game import GameHandler
 from handlers.testutils import OnTrackTestHelper
 
@@ -11,7 +9,7 @@ class TestJourney(OnTrackTestHelper):
 
     def setup_method(self, _):
         GameHandler.games.clear()
-        tools.mockAuthorize.username = 'testuser'
+        self.login()
 
     def setup_server():
 
@@ -72,7 +70,7 @@ class TestJourney(OnTrackTestHelper):
         self.post('/', json={})
         gameid = self.json['gameId']
 
-        tools.mockAuthorize.username = 'anotheruser'
+        self.login(username='anotheruser')
 
         self.delete('/{}'.format(gameid))
         self.assertStatus(403)
